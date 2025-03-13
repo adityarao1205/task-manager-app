@@ -1,19 +1,22 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const dotenv = require("dotenv");
-dotenv.config();
+const express = require('express');
+const mongoose = require('mongoose');
+const taskRoutes = require('./routes/taskRoutes');
+
 const app = express();
-app.use(cors());
+
+const PORT = process.env.PORT || 5001;
+
+// 👉 Middleware to parse JSON body
 app.use(express.json());
-mongoose.connect('mongodb://localhost:27017/mydb')
-    .then(() => console.log("MongoDB connected"))
-    .catch((err) => console.log("MongoDB connection error:", err));
-  app.get("/", (req, res) => {
-    res.send("Welcome to the Task Manager API!");
-  });
-  const port = process.env.PORT || 5001;
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-  });
-      
+
+// 👉 Connect to MongoDB
+mongoose.connect('mongodb://127.0.0.1:27017/task-manager')
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
+
+// 👉 Use the task routes
+app.use('/api', taskRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
